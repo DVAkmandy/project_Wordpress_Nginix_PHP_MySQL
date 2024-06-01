@@ -1,3 +1,4 @@
 .env
 mysql/mysql_latest.tar
 registry/registry.tar
+nginx-php-fpm_latest.tar

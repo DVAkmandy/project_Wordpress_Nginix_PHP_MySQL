@@ -11,7 +11,7 @@ services:
       - my-network
 
   nginx-php-fpm:
-    image: localhost:5000/nginx_latest:latest
+    image: localhost:5000/nginx-php-fpm_latest:latest
     container_name: nginx-php-fpm
     volumes:
       - ./nginx-php-fpm:/var/www/html
