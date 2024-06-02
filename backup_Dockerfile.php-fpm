@@ -34,35 +34,22 @@ RUN apt-get update && \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# certbot and additional dependencies
+#certbot
 RUN apt-get update && \
     apt-get install -y \
-    python3-pip \
-    certbot \
-    libmcrypt-dev \
-    libffi-dev \
-    libsqlite3-dev \
-    libsqlite3-0 \
-    libsqlite3-dev \
-    sqlite3 \
-    libpq-dev \
-    lua5.3 \
-    libwebp-dev \
-    zlib1g-dev \
-    libxpm-dev \
-    && \
-    pecl install xdebug redis mongodb && \
-    docker-php-ext-enable xdebug redis mongodb && \
-    echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
-    echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini && \
-    echo "zend_extension=xdebug" > /usr/local/etc/php/conf.d/xdebug.ini && \
+        python3-pip \
+        certbot \
+        && \
     pip3 install --upgrade pip && \
     mkdir -p /etc/letsencrypt/webrootauth && \
     apt-get remove -y \
         gcc \
+        musl-dev \
+        linux-headers \
+        libffi-dev \
         make \
         autoconf \
-    && \
+        && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
