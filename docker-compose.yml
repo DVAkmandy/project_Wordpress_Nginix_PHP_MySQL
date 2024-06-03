@@ -2,24 +2,40 @@ version: '3.8'
 
 services:
   mysql:
-    image: localhost:5000/mysql_latest:latest
+    image: localhost:5000/mysql:latest
     container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: wordpress_db
+    env_file:
+      - ./env/mysql.env
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/mysql:/var/lib/mysql
     networks:
       - my-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      retries: 3
+      interval: 10s
 
   nginx-php-fpm:
-    image: localhost:5000/nginx-php-fpm_latest:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.php-fpm
     container_name: nginx-php-fpm
     volumes:
-      - ./nginx-php-fpm:/var/www/html
+      - ./logs/nginx:/var/log/nginx
+      - ./src:/var/www/html
+    working_dir: /var/www/html
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - my-network
+    ports:
+      - "80:80"
+      - "443:443"
 
 networks:
   my-network:
     driver: bridge
+

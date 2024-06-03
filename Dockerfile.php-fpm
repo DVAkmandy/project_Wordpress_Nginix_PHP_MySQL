@@ -14,22 +14,23 @@ RUN apt-get update && \
     curl \
     wget \
     git \
-    supervisor \
+    autoconf \
+    gcc \
+    g++ \
+    make \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     libonig-dev \
     libzip-dev \
-    libmcrypt-dev \
-    && \
-    pecl install mcrypt \
-    && \
-    docker-php-ext-enable mcrypt \
-    && \
-    docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip \
-    && \
-    docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && \
+    zip \
+    unzip \
+    supervisor \
+    libmcrypt-dev && \
+    pecl install mcrypt && \
+    docker-php-ext-enable mcrypt && \
+    docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j$(nproc) gd
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -39,9 +40,7 @@ RUN apt-get update && \
     apt-get install -y \
     python3-pip \
     certbot \
-    libmcrypt-dev \
     libffi-dev \
-    libsqlite3-dev \
     libsqlite3-0 \
     libsqlite3-dev \
     sqlite3 \
@@ -49,8 +48,7 @@ RUN apt-get update && \
     lua5.3 \
     libwebp-dev \
     zlib1g-dev \
-    libxpm-dev \
-    && \
+    libxpm-dev && \
     pecl install xdebug redis mongodb && \
     docker-php-ext-enable xdebug redis mongodb && \
     echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
@@ -61,8 +59,7 @@ RUN apt-get update && \
     apt-get remove -y \
         gcc \
         make \
-        autoconf \
-    && \
+        autoconf && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
@@ -114,7 +111,7 @@ COPY /scripts/start.sh /start.sh
 
 RUN chmod +x /start.sh
 
-COPY /src/php.ini /etc/php/8.0/php.ini
+COPY /etc/php.ini /etc/php/8.0/php.ini
 
 RUN sed -i \
         -e "s/;opcache/opcache/g" \
